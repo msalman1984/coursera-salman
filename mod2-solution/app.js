@@ -27,7 +27,8 @@
   function ShoppingListCheckOffService(){
     var service = this;
 
-    var ToBuyArr = [{name: "cookies", quantity: 10},{name: "Milk", quantity: 5},{name: "Meat", quantity: 2}];
+    var ToBuyArr = [{name: "cookies", quantity: 10},{name: "Milk", quantity: 5},{name: "Meat", quantity: 2}
+                    ,{name: "Pizza", quantity: 2},{name: "Cola", quantity: 4}];
     var BoughtArr = [];
 
     service.getToBuyArr = function(){

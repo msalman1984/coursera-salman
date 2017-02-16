@@ -1,28 +1,51 @@
-angular.module('LunchCheck', [])
 
-.controller('LunchCheckController', LunchCheckController);
+(function(){
+  angular.module('CheckOffList', [])
 
-LunchCheckController.$inject = ['$scope'];
-function LunchCheckController($scope){
-  $scope.msg = '';
-  $scope.arraylength = 0;
-  $scope.array = '';
+  .controller('ToBuyController', ToBuyController)
+  .controller('AlreadyBoughtController', AlreadyBoughtController)
+  .service('ShoppingListCheckOffService', ShoppingListCheckOffService);
 
-  $scope.checkArray = function() {
-    var _array = $scope.array.split(',');
-    if(_array.length < 4 && _array.length > 1){
-      $scope.msg = 'Enjoy';
-    }else if(_array.length > 3){
-      $scope.msg = 'Too Much';
-    }else if(_array.length === 1){
-      if(_array[0] === ''){
-        $scope.msg = 'Please enter data first';
-      }
-      else{
-        $scope.msg = 'Enjoy';
-      }
-    }
+  ToBuyController.$inject = ['ShoppingListCheckOffService'];
+  function ToBuyController(ShoppingListCheckOffService){
+    var ToBuy = this;
+    ToBuy.ToBuyArr = ShoppingListCheckOffService.getToBuyArr();
+
+    ToBuy.itemBought = function(idx){
+      ShoppingListCheckOffService.ItemBought(idx);
+    };
+  }
 
 
-  };
-}
+  AlreadyBoughtController.$inject = ['ShoppingListCheckOffService'];
+  function AlreadyBoughtController(ShoppingListCheckOffService){
+    var Bought = this;
+    Bought.BoughtArr = ShoppingListCheckOffService.getBoughtArr();
+
+  }
+
+  function ShoppingListCheckOffService(){
+    var service = this;
+
+    var ToBuyArr = [{name: "cookies", quantity: 10},{name: "Milk", quantity: 5},{name: "Meat", quantity: 2}];
+    var BoughtArr = [];
+
+    service.getToBuyArr = function(){
+      return ToBuyArr;
+    };
+
+    service.getBoughtArr = function(){
+      return BoughtArr;
+    };
+
+    service.ItemBought = function(idx){
+      var _obj = {};
+      _obj.name = ToBuyArr[idx].name;
+      _obj.quantity = ToBuyArr[idx].quantity;
+      BoughtArr.push(_obj);
+      ToBuyArr.splice(idx,1);
+    };
+
+  }
+
+})();

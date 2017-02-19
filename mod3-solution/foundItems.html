@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<table style="width:100%">
+  <tr>
+    <th>Name</th>
+    <th>Short Name</th>
+    <th>Description</th>
+  </tr>
+  <tr ng-repeat="item in foundItems">
+    <td>{{item.name}}</td>
+    <td>{{item.short_name}}</td>
+    <td>{{item.description}}</td>
+    <td><button class="btn btn-primary" ng-click="onRemove({index: $index});">Don't want this one!</button></td>
+  </tr>
+</table>
+
+</html>

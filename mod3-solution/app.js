@@ -1,50 +1,97 @@
 
 (function(){
-  angular.module('CheckOffList', [])
+  'use strict';
+  angular.module('NarrowItDownApp', [])
 
-  .controller('ToBuyController', ToBuyController)
-  .controller('AlreadyBoughtController', AlreadyBoughtController)
-  .service('ShoppingListCheckOffService', ShoppingListCheckOffService);
+  .controller('NarrowItDownController', NarrowItDownController)
+  .directive('foundItems', FoundItems)
+  .service('MenuSearchService', MenuSearchService);
 
-  ToBuyController.$inject = ['ShoppingListCheckOffService'];
-  function ToBuyController(ShoppingListCheckOffService){
-    var ToBuy = this;
-    ToBuy.ToBuyArr = ShoppingListCheckOffService.getToBuyArr();
-
-    ToBuy.itemBought = function(idx){
-      ShoppingListCheckOffService.ItemBought(idx);
+  function FoundItems(){
+    var ddo = {
+      templateUrl: 'foundItems.html',
+      restrict: 'A',
+      scope: {
+        foundItems: '<',
+        onRemove: '&'
+      }
     };
+    return ddo;
+  };
+
+  NarrowItDownController.$inject = ['MenuSearchService'];
+  function NarrowItDownController(MenuSearchService){
+    var Ctrl = this;
+    Ctrl.nothingFound = undefined;
+
+    Ctrl.NarrowDownButton = function(SearchText){
+      Ctrl.found = [];
+      if(SearchText){
+        var promis = MenuSearchService.getMatchedMenuItems(SearchText);
+        promis.then(function (result) {
+
+          Ctrl.found = result;
+          console.log(Ctrl.found);
+          if(Ctrl.found.length > 0){
+            Ctrl.nothingFound = false;
+          }else {
+            Ctrl.nothingFound = true;
+          }
+        })
+      }else{
+        Ctrl.nothingFound = true;
+      }
+    };
+
+
+Ctrl.removeItem = function (index) {
+  Ctrl.found.splice(index,1);
+  if(Ctrl.found.length < 1){
+    Ctrl.nothingFound = true;
+  }
+};
   }
 
 
-  AlreadyBoughtController.$inject = ['ShoppingListCheckOffService'];
-  function AlreadyBoughtController(ShoppingListCheckOffService){
-    var Bought = this;
-    Bought.BoughtArr = ShoppingListCheckOffService.getBoughtArr();
+  MenuSearchService.$inject = ['$http'];
+    function MenuSearchService($http){
+      var service = this;
 
-  }
+      var strtext = 'chicken';
 
-  function ShoppingListCheckOffService(){
-    var service = this;
+    service.getMatchedMenuItems = function(SearchText){
+      var resData = [];
+      return $http(
+        {
+          method: 'GET',
+          url: ('https://davids-restaurant.herokuapp.com/menu_items.json')
+        }
+      ).then(function (result) {
+        // process result and only keep items that match
+        // resData = result;
+        for(var i = 0; i < result.data.menu_items.length; i++){
+          var _obj = {};
+          if(result.data.menu_items[i].description.indexOf(SearchText) !== -1 ){
+            // console.log(result.data.menu_items[i].description);
+            _obj.name = result.data.menu_items[i].name;
+            _obj.short_name = result.data.menu_items[i].short_name;
+            _obj.description = result.data.menu_items[i].description;
 
-    var ToBuyArr = [{name: "cookies", quantity: 10},{name: "Milk", quantity: 5},{name: "Meat", quantity: 2}
-                    ,{name: "Pizza", quantity: 2},{name: "Cola", quantity: 4}];
-    var BoughtArr = [];
+            resData.push(_obj);
 
-    service.getToBuyArr = function(){
-      return ToBuyArr;
-    };
 
-    service.getBoughtArr = function(){
-      return BoughtArr;
-    };
-
-    service.ItemBought = function(idx){
-      var _obj = {};
-      _obj.name = ToBuyArr[idx].name;
-      _obj.quantity = ToBuyArr[idx].quantity;
-      BoughtArr.push(_obj);
-      ToBuyArr.splice(idx,1);
+          }
+        }
+        // console.log(resData);
+        // console.log(result);
+        // return processed items
+        return resData;
+      })
+      .catch(function(error){
+        console.log('error');
+      }
+    );
+      // return 0;
     };
 
   }

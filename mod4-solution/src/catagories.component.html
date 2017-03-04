@@ -7,8 +7,8 @@
 <body>
 
   <table style="width:100%">
-    <tr ng-repeat="item in $ctrl.catagory" ui-sref="itemDetail({itemId:item})">
-      <td>{{item}}</td>
+    <tr ng-repeat="item in $ctrl.catagory" ui-sref="itemDetail({itemId:item.short_name})">
+      <td>{{item.name}}</td>
     </tr>
   </table>
 

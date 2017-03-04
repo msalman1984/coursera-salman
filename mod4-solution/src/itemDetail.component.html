@@ -7,8 +7,10 @@
 <body>
 
   <table style="width:100%">
-    <tr ng-repeat="item in $ctrl.itemDetail track by $index" ui-sref="itemDetail({itemId:item})">
-      <td>{{item}}</td>
+    <tr ng-repeat="item in $ctrl.itemDetail track by $index">
+      <td>{{item.name}}</td>
+      <td>{{item.short_name}}</td>
+      <td>{{item.description}}</td>
     </tr>
   </table>
 

@@ -63,26 +63,11 @@
       };
       service.getItemsForCategory = function(categoryShortName){
         console.log("categoryShortName "+categoryShortName);
-        return $http({
+        var promise = $http({
           method: "GET",
-          url: ("https://davids-restaurant.herokuapp.com/menu_items.json?category=")
-        })
-        .then(function (result) {
-               var resData = [];
-               for(var i = 0; i < result.data.menu_items.length; i++){
-
-                 if(result.data.menu_items[i].name.indexOf(categoryShortName) !== -1 ){
-                   var name = result.data.menu_items[i].name;
-                   console.log(name);
-                   resData.push(name);
-                 }
-               }
-               return resData;
-             })
-             .catch(function(error){
-               console.log('error service');
-             }
-           );
+          url: ("https://davids-restaurant.herokuapp.com/menu_items.json?category="+categoryShortName)
+        });
+        return promise;
       };
   }
   })();

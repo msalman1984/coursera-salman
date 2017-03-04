@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+</head>
+<body>
+
+  <table style="width:100%">
+    <tr ng-repeat="item in $ctrl.catagory" ui-sref="itemDetail({itemId:item})">
+      <td>{{item}}</td>
+    </tr>
+  </table>
+
+</body>
+</html>
